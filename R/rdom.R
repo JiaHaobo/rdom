@@ -64,7 +64,7 @@ rdom <- function(url, css, all, timeout, filename) {
   st <- attr(res, 'status')
   if (!is.null(st)) stop(paste(res, '\n'))
   p <- if (missing(filename)) {
-    xml2::read_xml(res)
+    XML::htmlParse(res, asText = TRUE)
   } else {
     xml2::read_xml(filename)
   }
