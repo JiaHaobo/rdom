@@ -42,6 +42,7 @@ rdom <- function(url, css, all, timeout, filename) {
     filename = path.expand(filename)
   }
   args <- list(
+    '-platform offscreen',
     system.file('rdomjs/rdom.js', package = 'rdom'),
     url,
     # NA is a nice default since jsonlite::toJSON(NA) == null
@@ -51,14 +52,16 @@ rdom <- function(url, css, all, timeout, filename) {
     filename %pe% NA
   )
   args <- lapply(args, jsonlite::toJSON, auto_unbox = TRUE)
+  args <- as.character(args)
+  args[1] <- gsub(pattern = "\"", replacement = "", x = args[1])
   phantom_bin <- find_phantom()
   res <- if (missing(filename)) {
     # capture output as a character vector
-    system2(phantom_bin, args = as.character(args),
+    system2(phantom_bin, args = args,
             stdout = TRUE, stderr = TRUE, wait = TRUE)
   } else {
     # ignore stdout/stderr and write to file
-    system2(phantom_bin, args = as.character(args),
+    system2(phantom_bin, args = args,
             stdout = FALSE, stderr = FALSE, wait = TRUE)
   }
   st <- attr(res, 'status')
