@@ -66,12 +66,14 @@ rdom <- function(url, css, all, timeout, filename) {
   p <- if (missing(filename)) {
     XML::htmlParse(res, asText = TRUE)
   } else {
-    xml2::read_xml(filename)
+    XML::htmlParse(filename)
+    # xml2::read_xml(filename)
   }
   # If the result is a node or node list, htmlParse() inserts them into
   # the body of a bare-bones HTML page.
   if (!missing(css)) {
-    nodes <- xml2::xml_add_child(p, '//body')[[1]]
+    nodes <- XML::xmlChildren(XML::getNodeSet(p, '//body')[[1]])
+    # nodes <- xml2::xml_add_child(p, '//body')[[1]]
     if (length(nodes) == 1) nodes[[1]] else nodes
   } else {
     p
